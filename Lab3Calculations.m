@@ -36,7 +36,10 @@ weightMatrix = mmainFile(52:61,1:10);
 %% Main steps of Calculation
 %% 1. Synchronize observables from both receivers using equations
 % 14
-
+P1refeq14 = P1ref + rhoDot*dtA;
+P1roveq14 = P1rov + rhoDot*dtB;
+phi1refeq14 = lambda1*phi1ref + rhoAtoP * dtA; % lambda times phi
+phi1roveq14 = lambda1*phi1rov + rhoAtoP * dtB; % lamda times phi
 %% 2. Compute single and double differences ? equations (15) and
 % (18). Use satellite 20 as a
 % AB,0
