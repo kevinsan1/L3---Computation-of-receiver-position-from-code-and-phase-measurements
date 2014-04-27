@@ -17,6 +17,7 @@ nRows = 5;
 dtA = excfile(24,3);
 dtB = excfile(25,3);
 sNum = excfile((28:33),1);
+refSatNum = 20;
 for i = 1:length(sNum) % vector of ones at satellite numbers
     vectorOfOnes(sNum(i),1) = 1; 
 end
@@ -41,18 +42,32 @@ weightMatrix = excfile(52:61,1:10);
 % 14
 P1refeq14 = P1ref + rhoDot*dtA;
 P1roveq14 = P1rov + rhoDot*dtB;
-phi1refeq14 = phi1ref + 1/lambda1 * rhoAtoP * dtA;  
-phi1roveq14 = phi1rov + 1/lambda1 * rhoAtoP * dtB;  
+phi1refeq14 = lambda1*phi1ref + rhoAtoP * dtA;  
+phi1roveq14 = lambda1*phi1rov + rhoAtoP * dtB;  
 %% 2. Compute single and double differences - equations (15) and
 % (18). Use satellite 20 as a reference satellite
 % for double differencing.
 P1eq15 = P1refeq14 - P1roveq14;
-phi1eq15 = (phi1refeq14 - phi1roveq14);
+phi1eq15 = phi1refeq14 - phi1roveq14;
 dtAB = dtB - dtA;
 % Double differences
-
+phi1eq18 = phi1eq15 - phi1eq15(refSatNum)*vectorOfOnes;
+P1eq18 = P1eq15 - P1eq15(refSatNum)*vectorOfOnes;
 %% 3. Compute coefficients a , a , a and ?pq - equations (12).
 % XYZ
-
+ax_S = -1 * (satCoordinates(:,1)-Xref*vectorOfOnes)./(rhoAtoP);
+ay_S = -1 * (satCoordinates(:,2)-Yref*vectorOfOnes)./(rhoB0toP);
+az_S = -1 * (satCoordinates(:,3)-Zref*vectorOfOnes)./(rhoB0toP);
+%
+aXB_st = ax_S - ax_S(20);
+aYB_st = ay_S - ax_S(20);
+aZB_st = az_S - ax_S(20);
 %% 4. Fill in matrixes A, L and compute least square solution of
 % equations (21).
+nv = [4,5,6,24,25];
+A = [aXB_st(nv,1), aYB_st(nv,1), aZB_st(nv,1)]; 
+A = [ A , eye(length(nv)) * lambda1 ; A , zeros(length(nv)) ];
+% L
+L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - P1eq15(20)];
+%
+X = inv(A'*weightMatrix*A)*A'*weightMatrix*L;
