@@ -48,16 +48,16 @@ phi1roveq14 = lambda1*phi1rov + rhoAtoP * dtB;
 % (18). Use satellite 20 as a reference satellite
 % for double differencing.
 P1eq15 = P1refeq14 - P1roveq14;
-phi1eq15 = phi1refeq14 - phi1roveq14;
+phi1eq15 = (phi1refeq14 - phi1roveq14);
 dtAB = dtB - dtA;
 % Double differences
 phi1eq18 = phi1eq15 - phi1eq15(refSatNum)*vectorOfOnes;
 P1eq18 = P1eq15 - P1eq15(refSatNum)*vectorOfOnes;
 %% 3. Compute coefficients a , a , a and ?pq - equations (12).
 % XYZ
-ax_S = -1 * (satCoordinates(:,1)-Xref*vectorOfOnes)./(rhoAtoP);
-ay_S = -1 * (satCoordinates(:,2)-Yref*vectorOfOnes)./(rhoB0toP);
-az_S = -1 * (satCoordinates(:,3)-Zref*vectorOfOnes)./(rhoB0toP);
+ax_S = -1 * (satCoordinates(:,1)-Xrov*vectorOfOnes)./(rhoB0toP);
+ay_S = -1 * (satCoordinates(:,2)-Yrov*vectorOfOnes)./(rhoB0toP);
+az_S = -1 * (satCoordinates(:,3)-Zrov*vectorOfOnes)./(rhoB0toP);
 %
 aXB_st = ax_S - ax_S(20);
 aYB_st = ay_S - ax_S(20);
@@ -68,6 +68,6 @@ nv = [4,5,6,24,25];
 A = [aXB_st(nv,1), aYB_st(nv,1), aZB_st(nv,1)]; 
 A = [ A , eye(length(nv)) * lambda1 ; A , zeros(length(nv)) ];
 % L
-L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - P1eq15(20)];
+L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - P1eq18(20)];
 %
 X = inv(A'*weightMatrix*A)*A'*weightMatrix*L;
