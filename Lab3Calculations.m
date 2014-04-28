@@ -67,6 +67,7 @@ az_S_rov = -1 * (satCoordinates(:,3)-Zrov*vectorOfOnes)./(rhoB0toP);
 aXB_st = -ax_S_rov + ax_S_rov(20);
 aYB_st = -ay_S_rov + ay_S_rov(20);
 aZB_st = -az_S_rov + az_S_rov(20);
+rhoAB_0 = rhoAtoP - rhoB0toP;
 %% 4. Fill in matrixes A, L and compute least square solution of
 % equations (21).
 p_AB_s = rhoB0toP-rhoAtoP;
@@ -74,6 +75,6 @@ nv = [4,5,6,24,25];
 A = [aXB_st(nv,1), aYB_st(nv,1), aZB_st(nv,1)]; 
 A = [ A , eye(length(nv)) * lambda1 ; A , zeros(length(nv)) ];
 % L
-L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - P1eq18(20)];
+L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - (rhoAtoP(nv)-rhoB0toP(nv)-(rhoAtoP(20)-rhoB0toP(20)))];
 %
 X = inv(A'*weightMatrix*A)*A'*weightMatrix*L;
