@@ -75,6 +75,6 @@ nv = [4,5,6,24,25];
 A = [aXB_st(nv,1), aYB_st(nv,1), aZB_st(nv,1)]; 
 A = [ A , eye(length(nv)) * lambda1 ; A , zeros(length(nv)) ];
 % L
-L = [phi1eq18(nv) - P1eq18(nv); P1eq18(nv) - (rhoAtoP(nv)-rhoB0toP(nv)-(rhoAtoP(20)-rhoB0toP(20)))];
+L = [phi1eq18(nv) - rhoAB_0(nv) + ones(5,1)*rhoAB_0(20); P1eq18(nv) - rhoAB_0(nv) + ones(5,1)*rhoAB_0(20)];
 %
 X = inv(A'*weightMatrix*A)*A'*weightMatrix*L;
